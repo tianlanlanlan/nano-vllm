@@ -22,6 +22,30 @@ A lightweight vLLM implementation built from scratch.
 pip install git+https://github.com/GeeeekExplorer/nano-vllm.git
 ```
 
+### flash-attn Prebuilt Wheel
+
+`flash-attn` builds CUDA kernels from source, slow and memory-intensive. Use a prebuilt wheel:
+
+```bash
+# 1. Check versions
+python -c "import torch; print(f'torch={torch.__version__}, cuda={torch.version.cuda}, cxx11abi={torch._C._GLIBCXX_USE_CXX11_ABI}')"
+
+# 2. Download matching wheel from GitHub Releases
+#    e.g. for torch 2.11+cu130 / cxx11abi=True / cp312:
+curl -sL -o /tmp/flash_attn-2.8.1+cu13torch2.10cxx11abiTRUE-cp312-cp312-linux_x86_64.whl \
+  https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.1/flash_attn-2.8.1%2Bcu13torch2.10cxx11abiTRUE-cp312-cp312-linux_x86_64.whl
+
+# 3. Install and sync
+uv pip install /tmp/flash_attn-2.8.1+cu13torch2.10cxx11abiTRUE-cp312-cp312-linux_x86_64.whl
+
+# 4. Pin in pyproject.toml to prevent source rebuild
+#    [tool.uv.sources]
+#    flash-attn = { path = "/tmp/flash_attn-2.8.1+cu13torch2.10cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
+
+uv sync
+python example.py
+```
+
 ## Model Download
 
 To download the model weights manually, use the following command:
